@@ -1,7 +1,6 @@
 require_relative 'airport'
 
 class Plane
-  # DEFAULT_STATUS = "flying"
 
   def initialize
     @flying = true

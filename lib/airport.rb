@@ -22,7 +22,6 @@ class Airport
     true
   end
 
-#rename method
   def plane_takes_off
     fail "Can't take off in storm" if stormy?
     fail "Airport empty" if empty?
