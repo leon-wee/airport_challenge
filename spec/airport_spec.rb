@@ -13,21 +13,22 @@ require 'airport'
 
 describe Airport do
   let(:plane) { double :plane }
-  before(:each) { allow(plane).to receive(:land) }
-  before(:each) { allow(plane).to receive(:fly) }
+  before(:each) do
+    allow(plane).to receive(:land).and_return plane
+    allow(plane).to receive(:fly).and_return plane
+  end
+
+  let(:weather) { double :weather }
+  subject(:airport) { Airport.new(weather)}
 
   describe 'take off' do
-    it 'instructs a plane to take off' do
-      expect(subject).to respond_to :take_off
-    end
-
     it "releases a plane" do
       subject.landing(plane)
-      expect(subject.take_off).to eq plane
+      expect(subject.plane_takes_off).to eq plane
     end
 
     it "cannot release a plane in empty airport" do
-      expect{subject.take_off}.to raise_error "Airport empty"
+      expect{subject.plane_takes_off}.to raise_error "Airport empty"
     end
   end
 
@@ -44,7 +45,7 @@ describe Airport do
     it "ensures that taken off plane status is flying" do
       subject.landing(plane)
       expect(plane).to receive :fly
-      subject.take_off
+      subject.plane_takes_off
     end
 
     it "receives a plane" do
@@ -56,6 +57,10 @@ describe Airport do
   describe "initialized stage" do
     it "has a default capacity when initialized" do
       expect(subject.capacity).to eq Airport::DEFAULT_CAPACITY
+    end
+
+    it "should have a weather argument" do
+      expect(subject.weather).to eq weather
     end
   end
 
@@ -77,33 +82,25 @@ describe Airport do
     # the plane can not land, and must not be in the airport
 
     context "weather status randomization" do
-      it "should be sunny between 0 - 2" do
-        subject.randomize_weather(3)
-        sunny = rand(3)
-        expect(subject.randomize_weather(sunny)).to eq "sunny"
-      end
-
-      it "should be stormy between 3 - 4" do
-        subject.randomize_weather(0)
-        stormy = 3 + rand(2)
-        expect(subject.randomize_weather(stormy)).to eq "stormy"
+      it "plane should be able to fly when sunny" do
+        # allow(weather).to receive(:status).and_return "sunny"
+        # expect(subject.weather.status).to eq "sunny"
       end
     end
 
     context "when weather conditions are stormy" do
-      it "recognizes the change weather method" do
-        expect(subject).to respond_to(:randomize_weather).with(1).argument
+
+      before{allow(subject).to receive(:weather).and_return 'stormy'}
+
+      it "should be stormy between" do
+        expect(subject.weather).to eq "stormy"
       end
 
       it "does not allow a plane to take off in storm" do
-        subject.landing(plane)
-        subject.randomize_weather(4)
-        expect{ subject.take_off }.to raise_error "Can't take off in storm"
+        expect{ subject.plane_takes_off }.to raise_error "Can't take off in storm"
       end
 
       it "does not allow a plane to land in storm" do
-        allow(plane).to receive :fly
-        subject.randomize_weather(4)
         expect{ subject.landing(plane) }.to raise_error "Can't land in storm"
       end
     end

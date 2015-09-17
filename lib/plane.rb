@@ -1,27 +1,32 @@
 require_relative 'airport'
 
 class Plane
-  DEFAULT_STATUS = "flying"
-
-  attr_reader :status
+  # DEFAULT_STATUS = "flying"
 
   def initialize
-    @status = DEFAULT_STATUS
+    @flying = true
   end
 
   def land
-    @status = "landed"
+    @flying = false
+    self
   end
 
   def fly
-    @status = "flying"
+    @flying = true
+    self
+  end
+
+  def status
+    flying? ? "flying" : "landed"
   end
 
   def flying?
-    @status == "flying"
+    @flying
   end
 
   def landed?
-    @status == "landed"
+    !flying?
   end
+
 end

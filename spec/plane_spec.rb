@@ -28,7 +28,7 @@ describe Plane do
 
   describe "plane status flying or landed" do
     it "is flying when created" do
-      expect(subject.status).to eq Plane::DEFAULT_STATUS
+      expect(subject.status).to eq "flying"
     end
   end
 
@@ -41,8 +41,7 @@ describe Plane do
 
   describe "plane fly method" do
     it "status is flying after being flown" do
-      subject.fly
-      expect(subject.fly).to eq "flying"
+      expect(subject.fly).to be_flying
     end
   end
 
@@ -57,8 +56,9 @@ describe Plane do
     end
 
     it "if plane land should be landed" do
-      subject.land
-      expect(subject.landed?).to eq true
+      # subject.land
+      # expect(subject.landed?).to eq true
+      expect(subject.land).to be_landed
     end
 
     it "if plane fly should be flown" do

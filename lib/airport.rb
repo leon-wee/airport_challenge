@@ -1,44 +1,42 @@
 require_relative 'plane'
+require_relative 'weather'
 
 class Airport
   DEFAULT_CAPACITY = 50
 
   attr_reader :capacity, :weather
 
-  def initialize
+  def initialize(weather)
     @airport_space = []
     @capacity = DEFAULT_CAPACITY
-    @weather = "sunny"
+    @weather = weather
   end
 
   def landing(plane)
-    fail "Can't land in storm" if stormy?
-    plane.land
-    fail "Airport is full" if full?
-    @airport_space << plane
+    @airport_space << plane.land if clear_for_landing
   end
 
-  def take_off
+  def clear_for_landing
+    fail "Can't land in storm" if stormy?
+    fail "Airport is full" if full?
+    true
+  end
+
+#rename method
+  def plane_takes_off
     fail "Can't take off in storm" if stormy?
     fail "Airport empty" if empty?
-    plane = @airport_space.pop
-    plane.fly
-    plane
+    plane = @airport_space.pop.fly
   end
 
   def empty?
     @airport_space.empty?
   end
 
-  def randomize_weather(n = rand(5))
-    return @weather = "sunny" if n < 3
-    @weather = "stormy"
-  end
-
   private
 
   def stormy?
-    @weather == "stormy"
+    weather == "stormy"
   end
 
   def full?
