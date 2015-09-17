@@ -76,5 +76,22 @@ describe Airport do
         expect{ subject.landing(plane) }.to raise_error "Can't land in storm"
       end
     end
+
+    context "when weather conditions are sunny" do
+      before{allow(subject).to receive(:weather).and_return 'sunny'}
+
+      it "should be stormy between" do
+        expect(subject.weather).to eq "sunny"
+      end
+
+      it "does not allow a plane to take off in storm" do
+        subject.landing(plane)
+        expect(subject.plane_takes_off).to eq plane
+      end
+
+      it "does not allow a plane to land in storm" do
+        expect(subject.landing(plane)).to eq [plane]
+      end
+    end
   end
 end
