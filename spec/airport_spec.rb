@@ -8,7 +8,7 @@ describe Airport do
   end
 
   let(:weather) { double :weather }
-  subject(:airport) { Airport.new(weather)}
+  subject(:airport) { described_class.new(weather)}
 
   describe 'take off' do
     it "releases a plane" do
